@@ -16,11 +16,11 @@ import MyRequests from './Dpages/MyRequestsPage';
 import PendingApprovals from './Dpages/PendingApprovalsPage';
 import FinanceReports from './Dpages/FinanceReportsPage';
 import NewPaymentRequest from './Dpages/NewPaymentRequest';
+import NewUser from './Dpages/NewUser'; // Corrected import
 // Admin Pages
 import UserManagement from './Dpages/UserManagement';
 import RoleConfiguration from './Dpages/RoleConfigurationPage';
 import AuditLogs from './Dpages/AuditLogsPage';
-
 // Theme
 import theme from './theme/theme';
 
@@ -46,6 +46,8 @@ function DashboardWrapper() {
         return <MyRequests />;
       case 'new-request':
         return <NewPaymentRequest />;
+      case 'new-user':
+        return <NewUser />; // Added new case
       case 'pending-approvals':
         return <PendingApprovals />;
       case 'finance-reports':
@@ -58,6 +60,8 @@ function DashboardWrapper() {
             return <RoleConfiguration />;
           case 'audit-logs':
             return <AuditLogs />;
+          case 'new-user':
+            return <NewUser />; // Added admin section case
           default:
             return <UserManagement />;
         }
@@ -91,13 +95,13 @@ function App() {
             <Route path="/register" element={<Register />} />
 
             {/* Private Routes - Using DashboardWrapper for the layout pattern */}
-          <Route path="/dashboard" element={
-  <Layout>
-    <Dashboard />
-  </Layout>
-} />              
+            <Route path="/dashboard" element={
+              <Layout>
+                <Dashboard />
+              </Layout>
+            } />
         
-            {/* Alternative Direct Routes - Choose one approach or the other */}
+            {/* Alternative Direct Routes */}
             <Route path="/my-requests" element={
               <Layout>
                 <MyRequests />
@@ -106,6 +110,11 @@ function App() {
             <Route path="/new-request" element={
               <Layout>
                 <NewPaymentRequest />
+              </Layout>
+            } />
+            <Route path="/new-user" element={
+              <Layout>
+                <NewUser />
               </Layout>
             } />
             <Route path="/pending-approvals" element={
@@ -129,10 +138,10 @@ function App() {
               </Layout>
             } />
             <Route path="/audit-logs" element={
-              <Layout>
-                <AuditLogs />
-              </Layout>
-            } />
+                <Layout>
+                  <AuditLogs />
+                </Layout>
+              } />
 
             {/* 404 */}
             <Route path="*" element={<NotFound />} />

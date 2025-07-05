@@ -22,7 +22,7 @@ const FinanceReports = () => {
         </Grid>
       </Grid>
       
-      <FinancialSummary data={financialSummary} />
+      <FinancialSummary data={financialSummary} />  
     </div>
   );
 };

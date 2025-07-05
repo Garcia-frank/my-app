@@ -69,7 +69,7 @@ function Dashboard() {
   });
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '10%', display: 'flex', flexDirection: 'column' }}>
       <PageHeader
         title="Payment Request Dashboard"
         subtitle="Manage and track payment requests across departments"

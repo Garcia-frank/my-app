@@ -61,7 +61,7 @@ export const FinancialSummaryTemplate = {
 };
 
 export const MonthlyDataPoint = {
-  month: new Date().toISOString().slice(0, 12), // YYYY-MM format
+  month: new Date().toISOString().slice(1, 13), // YYYY-MM format
   value: 0
 };
 

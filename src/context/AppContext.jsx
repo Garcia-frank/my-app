@@ -7,9 +7,9 @@ export const AppProvider = ({ children }) => {
   const [data, setData] = useState({
     currentPage: 'dashboard',
     requests: [
-      { id: 'PR-2024-001', requester: 'John Smith', amount: '$5,000.00', beneficiary: 'ABC Suppliers Ltd', status: 'Pending', date: '2024-01-15' },
-      { id: 'PR-2024-002', requester: 'Sarah Johnson', amount: '$2,500.00', beneficiary: 'Office Supplies Inc', status: 'Pending', date: '2024-01-14' },
-      { id: 'PR-2024-003', requester: 'Michael Chen', amount: '$7,500.00', beneficiary: 'Software Corp', status: 'Approved', date: '2024-01-13' },
+      { id: 'PR-2024-001', requester: 'John Smith', amount: 'F5,000.00', beneficiary: 'ABC Suppliers Ltd', status: 'Pending', date: '2024-01-15' },
+      { id: 'PR-2024-002', requester: 'Sarah Johnson', amount: 'F2,500.00', beneficiary: 'Office Supplies Inc', status: 'Pending', date: '2024-01-14' },
+      { id: 'PR-2024-003', requester: 'Michael Chen', amount: 'F7,500.00', beneficiary: 'Software Corp', status: 'Approved', date: '2024-01-13' },
     ],
     users: [
       { name: 'John Smith', email: 'john.smith@capitaltrading.com', role: 'Manager', status: 'Active', lastLogin: '2024-01-15 09:30' },
