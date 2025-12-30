@@ -1,26 +1,43 @@
-import React, { useState } from 'react';
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  Box, 
-  Typography, 
-  Select, 
+import React, { useState, useEffect } from 'react'; // Added useEffect
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Box,
+  Typography,
+  Select,
   MenuItem,
   TextField,
   InputLabel,
   FormControl,
   Stack,
   Divider,
-  Paper
+  Paper,
+  CircularProgress
 } from '@mui/material';
 import PageHeader from '../components/ui/PageHeader';
-import { auditLogs } from '../mockData';
+import auditService from '../services/auditService';
 
 const AuditLogs = () => {
+  const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [actionFilter, setActionFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('');
-  
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const data = await auditService.getAuditLogs();
+        setLogs(data);
+      } catch (error) {
+        console.error("Failed to fetch audit logs", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLogs();
+  }, []);
+
   // Action type color mapping
   const actionTypeColors = {
     login: 'warning.main',
@@ -30,7 +47,7 @@ const AuditLogs = () => {
   };
 
   // Apply filters to logs
-  const filteredLogs = auditLogs.filter(log => {
+  const filteredLogs = logs.filter(log => {
     if (actionFilter !== 'all' && log.actionType !== actionFilter) {
       return false;
     }
@@ -46,10 +63,10 @@ const AuditLogs = () => {
         title="Audit Logs"
         subtitle="System activity and security logs"
       />
-      
+
       <Card>
-        <CardHeader 
-          title="Recent Activity" 
+        <CardHeader
+          title="Recent Activity"
           action={
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <FormControl size="small" sx={{ minWidth: 150 }}>
@@ -96,28 +113,32 @@ const AuditLogs = () => {
         <Divider />
         <CardContent>
           <Stack spacing={2}>
-            {filteredLogs.length > 0 ? (
+            {loading ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                <CircularProgress />
+              </Box>
+            ) : filteredLogs.length > 0 ? (
               filteredLogs.map((log) => (
                 <Paper
                   key={log.id}
                   variant="outlined"
-                  sx={{ 
-                    p: 2, 
+                  sx={{
+                    p: 2,
                     borderRadius: 1,
                     bgcolor: 'grey.50',
                     display: 'flex',
                     alignItems: 'flex-start'
                   }}
                 >
-                  <Box 
-                    sx={{ 
-                      width: 8, 
-                      height: 8, 
-                      borderRadius: '50%', 
+                  <Box
+                    sx={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
                       bgcolor: actionTypeColors[log.actionType],
                       mt: 1,
                       mr: 2
-                    }} 
+                    }}
                   />
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="body2">

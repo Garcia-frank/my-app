@@ -17,18 +17,35 @@ import {
   Button,
   TextField
 } from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // ← ajout ici
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PageHeader from '../components/ui/PageHeader';
-import { users } from '../mockData';
+import userService from '../services/userService';
 
 const UserManagement = () => {
-  const navigate = useNavigate(); // ← initialisation ici
+  const navigate = useNavigate();
 
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [userToDeactivate, setUserToDeactivate] = useState(null);
+
+  const fetchUsers = async () => {
+    try {
+      const data = await userService.getUsers();
+      setUsers(data);
+    } catch (error) {
+      console.error('Failed to fetch users', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleAddUser = () => {
     navigate('/new-user'); // ← redirection vers la nouvelle page
@@ -40,9 +57,14 @@ const UserManagement = () => {
     setOpenEditDialog(true);
   };
 
-  const handleSaveEdit = () => {
-    console.log('Saving edited user:', selectedUser);
-    setOpenEditDialog(false);
+  const handleSaveEdit = async () => {
+    try {
+      await userService.updateUser(selectedUser.id, selectedUser);
+      setOpenEditDialog(false);
+      fetchUsers(); // Refresh list
+    } catch (error) {
+      console.error('Failed to update user', error);
+    }
   };
 
   const handleDeactivateUser = (userId) => {
@@ -51,9 +73,14 @@ const UserManagement = () => {
     setOpenConfirmDialog(true);
   };
 
-  const confirmDeactivate = () => {
-    console.log('Deactivating user:', userToDeactivate.id);
-    setOpenConfirmDialog(false);
+  const confirmDeactivate = async () => {
+    try {
+      await userService.deleteUser(userToDeactivate.id);
+      setOpenConfirmDialog(false);
+      fetchUsers(); // Refresh list
+    } catch (error) {
+      console.error('Failed to deactivate user', error);
+    }
   };
 
   return (

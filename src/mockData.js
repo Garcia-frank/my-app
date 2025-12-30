@@ -120,6 +120,12 @@ export const monthlyData = [
   { month: 'Apr', value: 32000 },
   { month: 'May', value: 28000 },
   { month: 'Jun', value: 35000 },
+  { month: 'Jul', value: 29000 },
+  { month: 'Aug', value: 38000 },
+  { month: 'Sep', value: 42000 },
+  { month: 'Oct', value: 31000 },
+  { month: 'Nov', value: 45000 },
+  { month: 'Dec', value: 52000 },
 ];
 
 // Mock status distribution data for charts

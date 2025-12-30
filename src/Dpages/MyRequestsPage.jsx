@@ -1,19 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Grid, 
-  Card, 
-  CardContent, 
-  Typography, 
-  Box, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow, 
-  Chip, 
-  Button, 
+import {
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Chip,
+  Button,
   Link,
   Dialog,
   DialogTitle,
@@ -22,7 +22,7 @@ import {
   Alert
 } from '@mui/material';
 import PageHeader from '../components/ui/PageHeader';
-import { paymentRequests } from '../mockData';
+import paymentService from '../services/paymentService';
 
 const statusColors = {
   pending: {
@@ -44,9 +44,20 @@ const MyRequests = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [cancelSuccess, setCancelSuccess] = useState(false);
+  const [myRequests, setMyRequests] = useState([]);
 
-  // For a real app, we would filter requests by the current user
-  const myRequests = paymentRequests;
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const data = await paymentService.getAllPayments();
+        // In real app we would filter by current user here or backend
+        setMyRequests(data);
+      } catch (error) {
+        console.error("Failed to fetch requests", error);
+      }
+    };
+    fetchRequests();
+  }, []);
 
   // Calculate stats
   const totalRequests = myRequests.length;
@@ -119,7 +130,7 @@ const MyRequests = () => {
         buttonText="Create New Request"
         onButtonClick={handleCreateNewRequest}
       />
-      
+
       <Card sx={{ mb: 4 }}>
         <CardContent>
           <Grid container spacing={20}>

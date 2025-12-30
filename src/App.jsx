@@ -6,9 +6,9 @@ import { AppProvider } from './context/AppContext';
 import Layout from './components/layout/Layout';
 // Public Pages
 import Home from './pages/Home';
-import Login from './pages/Login';
+import Login from './pages/login';
 import Register from './pages/Register';
-import NotFound from './pages/NotFound';
+import NotFound from './pages/Notfound';
 
 // Private Pages
 import Dashboard from './Dpages/DashboardPage';
@@ -24,62 +24,15 @@ import AuditLogs from './Dpages/AuditLogsPage';
 // Theme
 import theme from './theme/theme';
 
-function DashboardWrapper() {
-  const [activePage, setActivePage] = useState('dashboard');
-  const [adminSection, setAdminSection] = useState(null);
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!user || !user.token) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
 
-  const handleNavigation = (page) => {
-    setActivePage(page);
-    setAdminSection(null);
-  };
-
-  const handleAdminNavigation = (section) => {
-    setActivePage('admin');
-    setAdminSection(section);
-  };
-
-  const renderPage = () => {
-    switch (activePage) {
-      case 'dashboard':
-        return <Dashboard />;
-      case 'my-requests':
-        return <MyRequests />;
-      case 'new-request':
-        return <NewPaymentRequest />;
-      case 'new-user':
-        return <NewUser />; // Added new case
-      case 'pending-approvals':
-        return <PendingApprovals />;
-      case 'finance-reports':
-        return <FinanceReports />;
-      case 'admin':
-        switch (adminSection) {
-          case 'user-management':
-            return <UserManagement />;
-          case 'role-configuration':
-            return <RoleConfiguration />;
-          case 'audit-logs':
-            return <AuditLogs />;
-          case 'new-user':
-            return <NewUser />; // Added admin section case
-          default:
-            return <UserManagement />;
-        }
-      default:
-        return <Dashboard />;
-    }
-  };
-
-  return (
-    <Layout
-      activePage={activePage}
-      handleNavigation={handleNavigation}
-      handleAdminNavigation={handleAdminNavigation}
-    >
-      {renderPage()}
-    </Layout>
-  );
-}
 
 function App() {
   return (
@@ -94,54 +47,71 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            {/* Private Routes - Using DashboardWrapper for the layout pattern */}
+            {/* Private Routes - Protected by JWT check */}
             <Route path="/dashboard" element={
-              <Layout>
-                <Dashboard />
-              </Layout>
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
             } />
-        
-            {/* Alternative Direct Routes */}
+
             <Route path="/my-requests" element={
-              <Layout>
-                <MyRequests />
-              </Layout>
+              <ProtectedRoute>
+                <Layout>
+                  <MyRequests />
+                </Layout>
+              </ProtectedRoute>
             } />
             <Route path="/new-request" element={
-              <Layout>
-                <NewPaymentRequest />
-              </Layout>
+              <ProtectedRoute>
+                <Layout>
+                  <NewPaymentRequest />
+                </Layout>
+              </ProtectedRoute>
             } />
             <Route path="/new-user" element={
-              <Layout>
-                <NewUser />
-              </Layout>
+              <ProtectedRoute>
+                <Layout>
+                  <NewUser />
+                </Layout>
+              </ProtectedRoute>
             } />
             <Route path="/pending-approvals" element={
-              <Layout>
-                <PendingApprovals />
-              </Layout>
+              <ProtectedRoute>
+                <Layout>
+                  <PendingApprovals />
+                </Layout>
+              </ProtectedRoute>
             } />
             <Route path="/finance-reports" element={
-              <Layout>
-                <FinanceReports />
-              </Layout>
+              <ProtectedRoute>
+                <Layout>
+                  <FinanceReports />
+                </Layout>
+              </ProtectedRoute>
             } />
             <Route path="/user-management" element={
-              <Layout>
-                <UserManagement />
-              </Layout>
+              <ProtectedRoute>
+                <Layout>
+                  <UserManagement />
+                </Layout>
+              </ProtectedRoute>
             } />
             <Route path="/role-configuration" element={
-              <Layout>
-                <RoleConfiguration />
-              </Layout>
+              <ProtectedRoute>
+                <Layout>
+                  <RoleConfiguration />
+                </Layout>
+              </ProtectedRoute>
             } />
             <Route path="/audit-logs" element={
+              <ProtectedRoute>
                 <Layout>
                   <AuditLogs />
                 </Layout>
-              } />
+              </ProtectedRoute>
+            } />
 
             {/* 404 */}
             <Route path="*" element={<NotFound />} />

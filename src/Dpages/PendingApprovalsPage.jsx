@@ -1,37 +1,63 @@
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  Box, 
-  Typography, 
-  Button, 
-  Stack, 
+import { useState, useEffect } from 'react';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Box,
+  Typography,
+  Button,
+  Stack,
   Divider,
-  Paper
+  Paper,
+  CircularProgress
 } from '@mui/material';
 import PageHeader from '../components/ui/PageHeader';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { paymentRequests } from '../mockData';
+import paymentService from '../services/paymentService';
+import { useNavigate } from 'react-router-dom';
 
 const PendingApprovals = () => {
-  // In a real app, we would filter requests awaiting approval by the current user
-  // For this demo, we'll just use all pending payment requests
-  const pendingApprovals = paymentRequests.filter(req => req.status === 'pending');
+  const navigate = useNavigate();
+  const [pendingApprovals, setPendingApprovals] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleApprove = (requestId) => {
-    // Handle approve action
-    console.log('Approved:', requestId);
+  const fetchPending = async () => {
+    try {
+      const all = await paymentService.getAllPayments();
+      setPendingApprovals(all.filter(req => req.status === 'pending'));
+    } catch (error) {
+      console.error("Failed to fetch pending approvals", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleReject = (requestId) => {
-    // Handle reject action
-    console.log('Rejected:', requestId);
+  useEffect(() => {
+    fetchPending();
+  }, []);
+
+  const handleApprove = async (requestId) => {
+    try {
+      await paymentService.updatePaymentStatus(requestId, 'Approved', 'Current User'); // Replace 'Current User' with actual user if available
+      fetchPending();
+    } catch (error) {
+      console.error("Failed to approve", error);
+    }
+  };
+
+  const handleReject = async (requestId) => {
+    try {
+      await paymentService.updatePaymentStatus(requestId, 'Rejected', 'Current User');
+      fetchPending();
+    } catch (error) {
+      console.error("Failed to reject", error);
+    }
   };
 
   const handleReview = (requestId) => {
-    // Handle review action
+    // Navigate to details or open modal
     console.log('Reviewing:', requestId);
   };
 
@@ -49,10 +75,10 @@ const PendingApprovals = () => {
         title="Pending Approvals"
         subtitle="Review and approve payment requests"
       />
-      
+
       <Card>
-        <CardHeader 
-          title="Requests Awaiting Your Approval" 
+        <CardHeader
+          title="Requests Awaiting Your Approval"
           sx={{
             '& .MuiCardHeader-title': {
               fontSize: '1.125rem',
@@ -64,13 +90,13 @@ const PendingApprovals = () => {
           <Stack spacing={2}>
             {pendingApprovals.length > 0 ? (
               pendingApprovals.map((approval) => (
-                <Paper 
-                  key={approval.id} 
-                  variant="outlined" 
+                <Paper
+                  key={approval.id}
+                  variant="outlined"
                   sx={{ p: 2, borderRadius: 1 }}
                 >
-                  <Box sx={{ 
-                    display: 'flex', 
+                  <Box sx={{
+                    display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: { xs: 'flex-start', sm: 'center' },
                     flexDirection: { xs: 'column', sm: 'row' },
@@ -90,8 +116,8 @@ const PendingApprovals = () => {
                         Purpose: {approval.purpose || 'Not specified'}
                       </Typography>
                     </Box>
-                    <Stack 
-                      direction={{ xs: 'column', md: 'row' }} 
+                    <Stack
+                      direction={{ xs: 'column', md: 'row' }}
                       spacing={1}
                       sx={{ width: { xs: '100%', sm: 'auto' } }}
                     >

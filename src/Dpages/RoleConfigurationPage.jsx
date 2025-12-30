@@ -18,9 +18,9 @@ import {
 import PageHeader from '../components/ui/PageHeader';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { roles as initialRoles } from '../mockData';
+import roleService from '../services/roleService';
 
 const allPermissions = [
   'Full System Access',
@@ -35,9 +35,29 @@ const allPermissions = [
 ];
 
 const RoleConfiguration = () => {
-  const [roles, setRoles] = useState(initialRoles);
+  const [roles, setRoles] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editedRole, setEditedRole] = useState(null);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const data = await roleService.getRoles();
+        // Ensure permissions is an array if missing
+        const validData = data.map(r => ({
+          ...r,
+          permissions: r.permissions || []
+        }));
+        setRoles(validData);
+      } catch (error) {
+        console.error("Failed to fetch roles", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRoles();
+  }, []);
 
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [newRole, setNewRole] = useState({
@@ -51,7 +71,7 @@ const RoleConfiguration = () => {
     setOpenEditDialog(true);
   };
 
-  const handleTogglePermission = ( isNew = false) => {
+  const handleTogglePermission = (isNew = false) => {
     const role = isNew ? newRole : editedRole;
     if (!role) return;
     const updatedPermissions = role.permissions.includes(perm)

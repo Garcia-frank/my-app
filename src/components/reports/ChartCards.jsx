@@ -11,8 +11,8 @@ MonthlyDataPoint.propTypes = {
 const MonthlyTrendsChart = ({ data }) => {
   return (
     <Card sx={{ height: '100%', width: '100%' }}>
-      <CardHeader 
-        title="Monthly Payment Trends" 
+      <CardHeader
+        title="Monthly Payment Trends"
         sx={{
           '& .MuiCardHeader-title': {
             fontSize: '1.125rem',
@@ -21,19 +21,20 @@ const MonthlyTrendsChart = ({ data }) => {
         }}
       />
       <CardContent>
-        <Box sx={{ height: 300, width: '100%' }}>
+        <Box sx={{ height: 450, width: '100%' }}>
           <BarChart
             dataset={data}
-            xAxis={[{ 
-              scaleType: 'band', 
+            xAxis={[{
+              scaleType: 'band',
               dataKey: 'month',
               tickLabelStyle: {
-                fontSize: (40),
+                fontSize: 12,
               },
+              tickInterval: (value, index) => true,
             }]}
             series={[
-              { 
-                dataKey: 'value', 
+              {
+                dataKey: 'value',
                 label: 'Amount',
                 valueFormatter: (value) => `F${value.toLocaleString()}`,
                 color: '#1976d2',
@@ -44,7 +45,7 @@ const MonthlyTrendsChart = ({ data }) => {
                 hidden: true,
               },
             }}
-            height={300}
+            height={450}
             margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
           />
         </Box>
@@ -56,11 +57,11 @@ const MonthlyTrendsChart = ({ data }) => {
 const StatusDistributionChart = ({ data }) => {
   // Colors for the pie chart slices (success, warning, error)
   const colors = ['#10B981', '#F59E0B', '#EF4444'];
-  
+
   return (
     <Card sx={{ height: '100%' }}>
-      <CardHeader 
-        title="Payment Status Distribution" 
+      <CardHeader
+        title="Payment Status Distribution"
         sx={{
           '& .MuiCardHeader-title': {
             fontSize: '1.125rem',
@@ -69,7 +70,7 @@ const StatusDistributionChart = ({ data }) => {
         }}
       />
       <CardContent>
-        <Box sx={{ height: 300, width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box sx={{ height: 450, width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <PieChart
             series={[
               {
@@ -87,8 +88,8 @@ const StatusDistributionChart = ({ data }) => {
                 faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
               },
             ]}
-            height={300}
-            margin={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            height={450}
+            margin={{ top: 10, bottom: 10, left: 20, right: 20 }}
             slotProps={{
               legend: {
                 direction: 'row',
